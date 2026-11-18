@@ -2,149 +2,131 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111827">
-<title>Clock | デジタル＆アナログ時計</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e8e4dc">
+<title>My Clock</title>
 <style>
-:root{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:#111827;color:#f7f7f7;padding:clamp(10px,2.5vw,24px);display:flex;justify-content:center;align-items:center}
-.app{width:min(100%,900px);display:grid;gap:14px}
-.display{background:#202938;border-radius:22px;padding:clamp(16px,3vw,28px);text-align:center;min-width:0}
-.date{font-size:clamp(13px,2vw,17px);opacity:.85}
-.digital{font-size:clamp(42px,9vw,76px);font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.045em;line-height:1.2;margin:8px 0}
-.period{font-size:13px;opacity:.8}
-.analog{border-top:1px solid #ffffff35;margin-top:18px;padding-top:16px}
-.caption{font-size:11px;letter-spacing:.17em;opacity:.75;margin-bottom:12px}
-.face{width:min(57vw,260px);aspect-ratio:1;border:4px solid currentColor;border-radius:50%;margin:auto;position:relative}
-.num{position:absolute;inset:0;display:grid;place-items:start center;padding-top:7px;font-size:clamp(14px,3vw,19px);font-weight:650}
-.num span{display:block}
-.hand{position:absolute;left:50%;bottom:50%;transform-origin:50% 100%;border-radius:8px}
-.hour{height:25%;width:6px;background:currentColor}
-.minute{height:35%;width:4px;background:currentColor}
-.second{height:40%;width:2px;background:#ef6262}
-.pin{position:absolute;width:11px;height:11px;border-radius:50%;background:#ef6262;left:50%;top:50%;transform:translate(-50%,-50%)}
-.settings{background:#1f2937;border:1px solid #ffffff1c;border-radius:18px;padding:clamp(14px,2.5vw,20px);display:grid;gap:14px;min-width:0}
-.setting{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.label{font-size:14px;font-weight:650}.hint{font-size:12px;color:#cbd5e1;margin-top:3px}
-button{border:1px solid #ffffff40;border-radius:10px;padding:9px 12px;background:#374151;color:white;font:inherit;font-size:13px;cursor:pointer;touch-action:manipulation}
-button.active{background:#2563eb;border-color:#2563eb}
-button:focus-visible,input:focus-visible{outline:3px solid #60a5fa;outline-offset:2px}
-.buttons{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-input[type=color]{width:42px;height:36px;border:1px solid #ffffff40;border-radius:8px;background:transparent;padding:2px}
-.presets{justify-content:center}
-.reset{width:100%}
-.footer{text-align:center;color:#aab3c2;font-size:11px}
-[hidden]{display:none!important}
+:root{--bg:#e8e4dc;--fg:#33312d;--muted:#77736b;--panel:rgba(255,255,255,.62);--line:rgba(40,40,40,.13)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;transition:background .2s,color .2s}button,input,select{font:inherit}button{color:inherit;cursor:pointer}
+.app{max-width:760px;min-height:100vh;margin:auto;padding:calc(16px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.brand{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:650}.date-top{font-size:13px;color:var(--muted);margin-top:4px}
+.iconbtn{width:44px;height:44px;border:1px solid var(--line);border-radius:15px;background:var(--panel);font-size:22px}
+.clock-wrap{display:flex;flex-direction:column;align-items:center;gap:13px;padding:14px 0 22px}
+.clock-shell{width:min(76vw,340px);aspect-ratio:1;border-radius:50%;background:var(--clock-frame-bg, transparent);border:2px solid var(--clock-frame, rgba(80,80,80,.32));padding:9px;display:grid;place-items:center;box-shadow:0 4px 18px #0000000d}
+.clock-face{width:100%;height:100%;border-radius:50%;background:transparent;overflow:hidden}.clock-face svg{width:100%;height:100%;display:block}
+.hour-number{font:600 15px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;fill:var(--clock-number,var(--clock-hand));text-anchor:middle;dominant-baseline:middle}
+.digital{font-size:clamp(43px,12vw,72px);font-weight:250;letter-spacing:-.055em;font-variant-numeric:tabular-nums;line-height:1}.date-main{font-size:14px;color:var(--muted)}.weekday{font-size:11px;letter-spacing:.18em;color:var(--muted)}
+.exam{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:12px 20px;text-align:center;min-width:220px}.exam-label{font-size:12px;color:var(--muted)}.exam-count{font-size:23px;font-weight:650;margin-top:2px;font-variant-numeric:tabular-nums}
+.actions,.center{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.actions{margin-bottom:17px}.btn{border:1px solid var(--line);background:var(--panel);border-radius:13px;padding:10px 15px;font-size:13px}.btn.primary{background:var(--fg);color:var(--bg);border-color:transparent}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0;backdrop-filter:blur(16px);box-shadow:0 5px 20px #00000008}
+.cardhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px;font-weight:650;font-size:14px}.tabs{display:flex;gap:5px}.tabs button{border:1px solid var(--line);background:transparent;border-radius:10px;padding:7px 10px;font-size:12px}.tabs button.active{background:var(--fg);color:var(--bg)}
+.measure{font-size:34px;font-weight:300;text-align:center;font-variant-numeric:tabular-nums;margin:12px 0}.laps{max-height:100px;overflow:auto;font-size:12px;color:var(--muted);margin-top:10px}
+.timer-inputs{display:flex;justify-content:center;gap:10px;margin:8px 0}.timer-inputs label{font-size:12px;color:var(--muted)}.timer-inputs input{display:block;width:74px;margin-top:4px}
+input,select{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:9px;max-width:100%}
+.settings{display:none}.settings.open{display:block}.settings h2{font-size:17px;margin:0}.settings h3{font-size:11px;color:var(--muted);letter-spacing:.13em;margin:20px 0 6px;text-transform:uppercase}
+.setting{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}.setting:last-child{border:0}
+.switch{width:45px;height:26px;border:0;border-radius:20px;background:#8885;padding:3px;flex:none}.switch:before{content:"";display:block;width:20px;height:20px;background:white;border-radius:50%;transition:transform .18s}.switch.on{background:#4f9471}.switch.on:before{transform:translateX(19px)}
+.palette{display:grid;grid-template-columns:repeat(6,1fr);gap:13px;padding:10px 4px}.swatch{width:31px;height:31px;border-radius:50%;border:2px solid #8885;outline-offset:3px}.swatch.selected{outline:2px solid var(--fg)}
+.smallnote{font-size:11px;color:var(--muted);line-height:1.6;margin-top:12px}.hidden{display:none!important}
+.fullscreen{position:fixed!important;inset:0!important;z-index:1000;background:var(--bg);max-width:none;width:100%;height:100dvh;overflow:auto;display:flex;flex-direction:column;justify-content:center;padding:24px}
+.fullscreen header,.fullscreen .actions,.fullscreen .card,.fullscreen #settings,.fullscreen footer{display:none!important}.fullscreen .clock-wrap{padding:0}.fullscreen .clock-shell{width:min(78vw,min(52vh,460px))}
+footer{text-align:center;font-size:11px;color:var(--muted);padding:12px}
+@media(min-width:600px){.clock-shell{width:310px}}
 @media (orientation:landscape) and (min-width:600px){
- body{align-items:center}
- .app{grid-template-columns:minmax(0,1.12fr) minmax(270px,.88fr);align-items:center;max-width:1100px}
- .display{grid-row:1 / span 2}
- .digital{font-size:clamp(44px,7vw,72px)}
- .face{width:min(38vh, min(30vw,270px))}
- .analog{margin-top:12px;padding-top:12px}
- .settings{align-self:center}
- .footer{grid-column:2}
- .presets{justify-content:flex-start}
-}
-@media (orientation:landscape) and (max-width:599px){
- body{padding:8px}
- .app{grid-template-columns:1fr 1fr;gap:8px;align-items:center}
- .display{padding:10px}
- .digital{font-size:clamp(32px,7vw,48px);margin:5px 0}
- .face{width:min(34vh,35vw)}
- .analog{margin-top:8px;padding-top:8px}
- .caption{margin-bottom:6px}
- .settings{padding:10px;gap:8px}
- .setting{gap:5px}
- .label{font-size:12px}
- .hint{font-size:10px}
- button{padding:7px 8px;font-size:11px}
- .presets{gap:4px}
- .footer{grid-column:1/-1}
+ .app{max-width:1100px}.clock-wrap{display:grid;grid-template-columns:minmax(220px,1fr) minmax(260px,1fr);grid-template-rows:auto auto auto auto;column-gap:clamp(24px,6vw,80px);row-gap:12px;align-items:center;justify-items:center;max-width:900px;margin:12px auto 20px}
+ .clock-shell{grid-column:1;grid-row:1 / span 4;width:min(42vw, min(68vh,390px));}
+ .digital{grid-column:2;grid-row:1;align-self:end;font-size:clamp(48px,7vw,76px)}
+ .date-main{grid-column:2;grid-row:2}.weekday{grid-column:2;grid-row:3}.exam{grid-column:2;grid-row:4;align-self:start}
+ .clock-wrap:has(.clock-shell.hidden){grid-template-columns:1fr}.clock-wrap:has(.clock-shell.hidden) .digital,.clock-wrap:has(.clock-shell.hidden) .date-main,.clock-wrap:has(.clock-shell.hidden) .weekday,.clock-wrap:has(.clock-shell.hidden) .exam{grid-column:1}
 }
 </style>
 </head>
 <body>
-<main class="app">
-<section class="display" id="display">
- <div class="date" id="date">読み込み中…</div>
- <div class="digital" id="digital">--:--:--</div>
- <div class="period" id="period">24時間表記</div>
- <div class="analog" id="analog">
-  <div class="caption">ANALOG CLOCK</div>
-  <div class="face" id="face">
-   <div class="num"><span>12</span></div>
-   <div class="num" style="transform:rotate(30deg)"><span style="transform:rotate(-30deg)">1</span></div>
-   <div class="num" style="transform:rotate(60deg)"><span style="transform:rotate(-60deg)">2</span></div>
-   <div class="num" style="transform:rotate(90deg)"><span style="transform:rotate(-90deg)">3</span></div>
-   <div class="num" style="transform:rotate(120deg)"><span style="transform:rotate(-120deg)">4</span></div>
-   <div class="num" style="transform:rotate(150deg)"><span style="transform:rotate(-150deg)">5</span></div>
-   <div class="num" style="transform:rotate(180deg)"><span style="transform:rotate(-180deg)">6</span></div>
-   <div class="num" style="transform:rotate(210deg)"><span style="transform:rotate(-210deg)">7</span></div>
-   <div class="num" style="transform:rotate(240deg)"><span style="transform:rotate(-240deg)">8</span></div>
-   <div class="num" style="transform:rotate(270deg)"><span style="transform:rotate(-270deg)">9</span></div>
-   <div class="num" style="transform:rotate(300deg)"><span style="transform:rotate(-300deg)">10</span></div>
-   <div class="num" style="transform:rotate(330deg)"><span style="transform:rotate(-330deg)">11</span></div>
-   <div class="hand hour" id="hour"></div><div class="hand minute" id="minute"></div>
-   <div class="hand second" id="second"></div><div class="pin"></div>
-  </div>
- </div>
+<main class="app" id="app">
+<header><div><div class="brand">MY CLOCK</div><div class="date-top" id="dateTop"></div></div><button class="iconbtn" id="menu" aria-label="設定を開く">☰</button></header>
+<section class="clock-wrap" id="clockWrap">
+ <div class="clock-shell"><div class="clock-face">
+  <svg viewBox="0 0 300 300" role="img" aria-label="アナログ時計">
+   <g id="minuteMarks"></g>
+   <g id="hourMarks"></g>
+   <g id="hourNumbers"></g>
+   <line id="hourHand" x1="150" y1="150" x2="150" y2="103" stroke="var(--clock-hand, #292929)" stroke-width="10" stroke-linecap="round"/>
+   <line id="minuteHand" x1="150" y1="150" x2="150" y2="54" stroke="var(--clock-hand, #292929)" stroke-width="7" stroke-linecap="round"/>
+   <line id="secondHand" x1="150" y1="163" x2="150" y2="39" stroke="var(--clock-second, #e99a3c)" stroke-width="2.7" stroke-linecap="round"/>
+   <circle cx="150" cy="150" r="7" fill="#e99a3c"/><circle cx="150" cy="150" r="3" fill="var(--clock-hand, #292929)"/>
+  </svg>
+ </div></div>
+ <div class="digital" id="digital">00:00:00</div><div class="date-main" id="dateMain"></div><div class="weekday" id="weekday"></div>
+ <div class="exam" id="exam"><div class="exam-label">大学入学共通テストまで</div><div class="exam-count" id="examCount">あと -- 日</div></div>
 </section>
-<section class="settings">
- <div class="setting"><div><div class="label">時刻の表示形式</div><div class="hint">12時間・24時間</div></div><div class="buttons"><button class="active" data-format="24">24時間</button><button data-format="12">12時間</button></div></div>
- <div class="setting"><div><div class="label">背景色</div><div class="hint">時計の背景色</div></div><div class="buttons"><input type="color" id="picker" value="#202938"><span class="hint" id="hex">#202938</span></div></div>
- <div class="buttons presets">
-  <button data-color="#202938" style="background:#202938">ネイビー</button><button data-color="#243b35" style="background:#243b35">グリーン</button>
-  <button data-color="#493448" style="background:#493448">パープル</button><button data-color="#3e4148" style="background:#3e4148">グレー</button>
-  <button data-color="#f1eee6" style="background:#f1eee6;color:#333">アイボリー</button><button data-color="#e4edf5" style="background:#e4edf5;color:#333">ライトブルー</button>
- </div>
- <div class="setting"><div class="label">アナログ時計</div><button id="analogToggle" class="active">表示中</button></div>
- <div class="setting"><div class="label">秒の表示</div><button id="secondsToggle" class="active">表示中</button></div>
- <button class="reset" id="reset">設定を初期状態に戻す ↺</button>
+<section class="card" id="tools">
+ <div class="cardhead"><span>計測ツール</span><div class="tabs"><button id="stopTab" class="active">ストップウォッチ</button><button id="timerTab">タイマー</button></div></div>
+ <div id="stopwatch"><div class="measure" id="stopwatchDisplay">00:00:00.00</div><div class="center"><button class="btn primary" id="swStart">スタート</button><button class="btn" id="swLap">ラップ</button><button class="btn" id="swReset">リセット</button></div><div class="laps" id="laps"></div></div>
+ <div id="timer" class="hidden"><div class="timer-inputs"><label>分<input id="timerMin" type="number" min="0" max="999" value="5"></label><label>秒<input id="timerSec" type="number" min="0" max="59" value="0"></label></div><div class="measure" id="timerDisplay">05:00</div><div class="center"><button class="btn primary" id="timerStart">開始</button><button class="btn" id="timerReset">リセット</button></div><div class="smallnote" id="timerStatus" style="text-align:center">時間を設定して開始</div></div>
 </section>
-<div class="footer">端末の現在時刻に自動で同期します</div>
+<section class="card settings" id="settings">
+ <div class="cardhead"><h2>設定</h2><button class="btn" id="closeSettings">閉じる ×</button></div>
+ <h3>表示</h3>
+ <div class="setting">秒数を表示 <button class="switch on" data-pref="seconds" aria-label="秒数を表示"></button></div>
+ <div class="setting">日付を表示 <button class="switch on" data-pref="date" aria-label="日付を表示"></button></div>
+ <div class="setting">アナログ時計を表示 <button class="switch on" data-pref="analog" aria-label="アナログ時計を表示"></button></div>
+ <div class="setting">共通テストカウントダウン <button class="switch on" data-pref="exam" aria-label="共通テストカウントダウン"></button></div>
+ <div class="setting">24時間表示 <button class="switch on" data-action="format24" aria-label="24時間表示"></button></div>
+ <div class="setting">全画面表示 <button class="switch" data-action="fullscreenMode" aria-label="全画面表示"></button></div>
+ <div class="setting">ストップウォッチ・タイマー <button class="switch" data-pref="tools" aria-label="計測ツール"></button></div>
+ <div class="setting">夜間モード <button class="switch on" data-pref="night" aria-label="夜間モード"></button></div>
+ <h3>背景テーマ</h3><div class="palette" id="palette"></div>
+ <h3>表示カスタマイズ</h3>
+ <div class="setting"><label for="font">フォント</label><select id="font"><option value="system">標準</option><option value="rounded">丸みのある文字</option><option value="serif">セリフ</option><option value="mono">等幅</option></select></div>
+ <div class="setting"><label for="dateFormat">日付形式</label><select id="dateFormat"><option value="jp">日本語</option><option value="short">11/18 Wed</option><option value="long">Wednesday, November 18</option></select></div>
+ <div class="setting"><label for="layout">時計の配置</label><select id="layout"><option value="center">中央</option><option value="top">上寄せ</option></select></div>
+ <h3>明るさ</h3><input id="brightness" type="range" min="50" max="115" value="100" style="width:100%">
+ <div class="center" style="margin-top:14px"><button class="btn" id="nightBtn">夜間モード ON / OFF</button><button class="btn" id="saveBtn">設定を保存</button></div>
+ <p class="smallnote">設定はこの端末のブラウザに保存されます。全画面表示はブラウザの仕様により動作が異なる場合があります。</p>
+</section><footer>MY CLOCK</footer>
 </main>
 <script>
-(function(){
- 'use strict';
- let format='24',showAnalog=true,showSeconds=true;
- const $=id=>document.getElementById(id);
- function tick(){
-  const d=new Date(),h=d.getHours(),m=d.getMinutes(),s=d.getSeconds(),ms=d.getMilliseconds();
-  const days=['日','月','火','水','木','金','土'];
-  $('date').textContent=d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日（'+days[d.getDay()]+'）';
-  const hh=format==='24'?h:(h%12||12);
-  $('digital').textContent=String(hh).padStart(2,'0')+':'+String(m).padStart(2,'0')+(showSeconds?':'+String(s).padStart(2,'0'):'');
-  $('period').textContent=format==='24'?'24時間表記':'12時間表記 ・ '+(h<12?'AM':'PM');
-  $('hour').style.transform='translateX(-50%) rotate('+((h%12)*30+m*.5)+'deg)';
-  $('minute').style.transform='translateX(-50%) rotate('+(m*6+s*.1)+'deg)';
-  $('second').style.transform='translateX(-50%) rotate('+(s*6+ms*.006)+'deg)';
- }
- function color(c){
-  $('display').style.background=c;$('picker').value=c;$('hex').textContent=c.toUpperCase();
-  const n=parseInt(c.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255;
-  const fg=(r*299+g*587+b*114)/1000>145?'#20242b':'#f7f7f7';
-  $('display').style.color=fg;$('face').style.color=fg;$('face').style.borderColor=fg;
- }
- document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',()=>{
-  format=b.dataset.format;document.querySelectorAll('[data-format]').forEach(x=>x.classList.toggle('active',x===b));tick();
- }));
- $('picker').addEventListener('input',e=>color(e.target.value));
- document.querySelectorAll('[data-color]').forEach(b=>b.addEventListener('click',()=>color(b.dataset.color)));
- $('analogToggle').addEventListener('click',()=>{
-  showAnalog=!showAnalog;$('analog').hidden=!showAnalog;$('analogToggle').textContent=showAnalog?'表示中':'非表示';$('analogToggle').classList.toggle('active',showAnalog);
- });
- $('secondsToggle').addEventListener('click',()=>{
-  showSeconds=!showSeconds;$('secondsToggle').textContent=showSeconds?'表示中':'非表示';$('secondsToggle').classList.toggle('active',showSeconds);tick();
- });
- $('reset').addEventListener('click',()=>{
-  format='24';showAnalog=true;showSeconds=true;color('#202938');
-  document.querySelectorAll('[data-format]').forEach(x=>x.classList.toggle('active',x.dataset.format==='24'));
-  $('analog').hidden=false;$('analogToggle').textContent='表示中';$('analogToggle').classList.add('active');
-  $('secondsToggle').textContent='表示中';$('secondsToggle').classList.add('active');tick();
- });
- color('#202938');tick();window.setInterval(tick,100);
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id),app=$('app');
+const themes=[['#191b20','#f5f5f7'],['#f1f2f5','#24262c'],['#34383f','#f5f5f5'],['#666a70','#fff'],['#a7a9ac','#22252a'],['#263b54','#f4f7fb'],['#405b75','#fff'],['#91a6b9','#202b36'],['#24382f','#f2f7f1'],['#526b5a','#fff'],['#a8b8a2','#263128'],['#49352d','#fbf5ef'],['#795a48','#fff8f1'],['#d9cbb7','#302a24'],['#493744','#fff5fc'],['#70566d','#fff7ff'],['#c6afc1','#352c35'],['#e8e4dc','#33312d']];
+const prefs={seconds:true,date:true,analog:true,exam:true,tools:false,night:true};
+let is24=true,nightMode=false,swRunning=false,swElapsed=0,swStart=0,swTick=null,tmRunning=false,tmRemaining=0,tmEnd=0,tmTick=null;
+function lum(hex){let v=hex.slice(1),c=[0,2,4].map(i=>parseInt(v.slice(i,i+2),16)/255).map(x=>x<=.03928?x/12.92:((x+.055)/1.055)**2.4);return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+function applyTheme(bg,fg){let light=lum(bg)>.48;document.documentElement.style.setProperty('--bg',bg);document.documentElement.style.setProperty('--fg',fg);document.documentElement.style.setProperty('--muted',light?'#77736b':'#b8bdc7');document.documentElement.style.setProperty('--panel',light?'rgba(255,255,255,.62)':'rgba(20,24,31,.62)');document.documentElement.style.setProperty('--line',light?'rgba(40,40,40,.13)':'rgba(255,255,255,.14)');document.documentElement.style.setProperty('--clock-hand',light?'#292929':'#e8e8e8');document.documentElement.style.setProperty('--clock-number',light?'#44413b':'#e3e6eb');document.documentElement.style.setProperty('--clock-second','#e99a3c');document.documentElement.style.setProperty('--clock-mark',light?'#929292':'#aeb4bd');document.documentElement.style.setProperty('--clock-minute-mark',light?'#b9b6af':'#737b87');document.documentElement.style.setProperty('--clock-frame',light?'rgba(75,70,62,.38)':'rgba(225,230,238,.42)');document.documentElement.style.setProperty('--clock-frame-bg',light?'rgba(255,255,255,.12)':'rgba(255,255,255,.025)')}
+function save(){localStorage.setItem('myClockSettings',JSON.stringify({prefs,is24,theme:localStorage.getItem('clockTheme')||17,font:$('font').value,dateFormat:$('dateFormat').value,layout:$('layout').value,brightness:$('brightness').value}))}
+function setTheme(i){nightMode=false;applyTheme(...themes[i]);document.querySelectorAll('.swatch').forEach((b,j)=>b.classList.toggle('selected',j===i));localStorage.setItem('clockTheme',i);save()}
+function buildPalette(){themes.forEach((p,i)=>{let b=document.createElement('button');b.className='swatch';b.style.background=p[0];b.title='テーマ '+(i+1);b.setAttribute('aria-label','テーマ '+(i+1));b.onclick=()=>setTheme(i);$('palette').appendChild(b)})}
+function dateText(d){let f=$('dateFormat').value;if(f==='short')return `${d.getMonth()+1}/${d.getDate()} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}`;if(f==='long')return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${'日月火水木金土'[d.getDay()]}）`}
+function updateClock(){let d=new Date(),h=d.getHours(),m=d.getMinutes(),s=d.getSeconds();$('digital').textContent=`${String(is24?h:(h%12||12)).padStart(2,'0')}:${String(m).padStart(2,'0')}${prefs.seconds?':'+String(s).padStart(2,'0'):''}`;$('dateTop').textContent=dateText(d);$('dateMain').textContent=dateText(d);$('weekday').textContent=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'][d.getDay()];$('hourHand').setAttribute('transform',`rotate(${(h%12)*30+m*.5} 150 150)`);$('minuteHand').setAttribute('transform',`rotate(${m*6+s*.1} 150 150)`);$('secondHand').setAttribute('transform',`rotate(${s*6} 150 150)`);let days=Math.ceil((new Date(2027,0,16)-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/86400000);$('examCount').textContent=days>0?`あと ${days} 日`:days===0?'本日です':'試験日を迎えました'}
+function buildMarks(){const ns='http://www.w3.org/2000/svg';let mins=$('minuteMarks'),hours=$('hourMarks');for(let i=0;i<60;i++){let a=i*Math.PI/30,isHour=i%5===0,line=document.createElementNS(ns,'line');line.setAttribute('x1',150+Math.sin(a)*(isHour?108:116));line.setAttribute('y1',150-Math.cos(a)*(isHour?108:116));line.setAttribute('x2',150+Math.sin(a)*124);line.setAttribute('y2',150-Math.cos(a)*124);line.setAttribute('stroke',isHour?'var(--clock-mark, #929292)':'var(--clock-minute-mark, #b9b6af)');line.setAttribute('stroke-width',isHour?'7':'2.5');line.setAttribute('stroke-linecap','round');(isHour?hours:mins).appendChild(line)}let nums=$('hourNumbers');for(let n=1;n<=12;n++){let a=n*Math.PI/6,t=document.createElementNS(ns,'text');t.setAttribute('x',150+Math.sin(a)*88);t.setAttribute('y',150-Math.cos(a)*88);t.setAttribute('class','hour-number');t.textContent=String(n);nums.appendChild(t)}}
+function applyPrefs(){document.querySelectorAll('[data-pref]').forEach(b=>b.classList.toggle('on',prefs[b.dataset.pref]));$('dateTop').classList.toggle('hidden',!prefs.date);$('dateMain').classList.toggle('hidden',!prefs.date);$('weekday').classList.toggle('hidden',!prefs.date);$('exam').classList.toggle('hidden',!prefs.exam);$('tools').classList.toggle('hidden',!prefs.tools);document.querySelector('.clock-shell').classList.toggle('hidden',!prefs.analog);document.querySelector('[data-action="format24"]').classList.toggle('on',is24);updateClock()}
+function load(){try{let d=JSON.parse(localStorage.getItem('myClockSettings')||'null');if(!d)return;if(d.prefs)Object.assign(prefs,d.prefs);prefs.tools=d.prefs?.tools===true;is24=d.is24!==false;let i=Number(d.theme??17);if(!Number.isInteger(i)||i<0||i>=themes.length)i=17;applyTheme(...themes[i]);$('font').value=d.font||'system';$('dateFormat').value=d.dateFormat||'jp';$('layout').value=d.layout||'center';$('brightness').value=d.brightness||100;document.body.style.filter=`brightness(${$('brightness').value/100})`;document.body.style.fontFamily=$('font').value==='serif'?'Georgia,serif':$('font').value==='mono'?'ui-monospace,monospace':$('font').value==='rounded'?'ui-rounded,system-ui,sans-serif':'';$('clockWrap').style.paddingTop=$('layout').value==='top'?'0':'14px';}catch(e){}}
+document.querySelectorAll('[data-pref]').forEach(b=>b.onclick=()=>{prefs[b.dataset.pref]=!prefs[b.dataset.pref];applyPrefs();save()});
+$('menu').onclick=()=>$('settings').classList.toggle('open');$('closeSettings').onclick=()=>$('settings').classList.remove('open');
+document.querySelector('[data-action="format24"]').onclick=()=>{is24=!is24;document.querySelector('[data-action="format24"]').classList.toggle('on',is24);updateClock();save()};
+function toggleFull(){app.classList.toggle('fullscreen');document.querySelector('[data-action="fullscreenMode"]').classList.toggle('on',app.classList.contains('fullscreen'))}
+document.querySelector('[data-action="fullscreenMode"]').onclick=toggleFull;
+$('font').onchange=()=>{let v=$('font').value;document.body.style.fontFamily=v==='rounded'?'ui-rounded,system-ui,sans-serif':v==='serif'?'Georgia,serif':v==='mono'?'ui-monospace,monospace':'-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif';save()};
+$('dateFormat').onchange=()=>{updateClock();save()};$('layout').onchange=()=>{$('clockWrap').style.paddingTop=$('layout').value==='top'?'0':'14px';save()};
+$('brightness').oninput=()=>{document.body.style.filter=`brightness(${$('brightness').value/100})`;save()};
+function toggleNight(){if(!prefs.night)return;nightMode=!nightMode;if(nightMode)applyTheme('#090b10','#d3d9e2');else{let i=Number(localStorage.getItem('clockTheme')||17);applyTheme(...themes[i])}save()}
+$('nightBtn').onclick=toggleNight;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){app.classList.remove('fullscreen');document.querySelector('[data-action="fullscreenMode"]').classList.remove('on')}});
+$('stopTab').onclick=()=>{$('stopwatch').classList.remove('hidden');$('timer').classList.add('hidden');$('stopTab').classList.add('active');$('timerTab').classList.remove('active')};
+$('timerTab').onclick=()=>{$('timer').classList.remove('hidden');$('stopwatch').classList.add('hidden');$('timerTab').classList.add('active');$('stopTab').classList.remove('active')};
+const pad=n=>String(n).padStart(2,'0');
+function swRender(){let ms=swElapsed+(swRunning?performance.now()-swStart:0),cent=Math.floor(ms/10)%100,sec=Math.floor(ms/1000)%60,min=Math.floor(ms/60000);$('stopwatchDisplay').textContent=`${pad(Math.floor(min/60))}:${pad(min%60)}:${pad(sec)}.${pad(cent)}`}
+$('swStart').onclick=()=>{if(swRunning){swElapsed+=performance.now()-swStart;swRunning=false;clearInterval(swTick);$('swStart').textContent='再開'}else{swStart=performance.now();swRunning=true;swTick=setInterval(swRender,35);$('swStart').textContent='一時停止'}swRender()};
+$('swReset').onclick=()=>{swRunning=false;clearInterval(swTick);swElapsed=0;$('swStart').textContent='スタート';$('laps').innerHTML='';swRender()};
+$('swLap').onclick=()=>{if(!swRunning)return;let d=document.createElement('div');d.textContent=`ラップ ${$('laps').children.length+1}　${$('stopwatchDisplay').textContent}`;$('laps').prepend(d)};
+function timerDisplay(){let t=Math.max(0,tmRemaining);$('timerDisplay').textContent=`${pad(Math.floor(t/60000))}:${pad(Math.floor(t/1000)%60)}`}
+function timerStop(){tmRunning=false;clearInterval(tmTick);$('timerStart').textContent='再開'}
+$('timerStart').onclick=()=>{if(tmRunning){tmRemaining=Math.max(0,tmEnd-Date.now());timerStop();$('timerStatus').textContent='一時停止中'}else{if(tmRemaining<=0)tmRemaining=(Math.max(0,Number($('timerMin').value))*60+Math.min(59,Math.max(0,Number($('timerSec').value))))*1000;if(tmRemaining<=0)return;tmEnd=Date.now()+tmRemaining;tmRunning=true;$('timerStart').textContent='一時停止';$('timerStatus').textContent='カウントダウン中';tmTick=setInterval(()=>{tmRemaining=Math.max(0,tmEnd-Date.now());timerDisplay();if(tmRemaining<=0){timerStop();$('timerStart').textContent='開始';$('timerStatus').textContent='時間になりました！';try{if(navigator.vibrate)navigator.vibrate([300,150,300])}catch(e){}if('Notification'in window&&Notification.permission==='granted')new Notification('タイマー終了',{body:'設定した時間になりました'})}},100)}};
+$('timerReset').onclick=()=>{timerStop();tmRemaining=0;$('timerMin').value=5;$('timerSec').value=0;timerDisplay();$('timerStatus').textContent='時間を設定して開始'};
+$('timerMin').onchange=$('timerSec').onchange=()=>{tmRemaining=(Math.max(0,Number($('timerMin').value))*60+Math.min(59,Math.max(0,Number($('timerSec').value))))*1000;timerDisplay()};
+$('saveBtn').onclick=()=>{save();$('saveBtn').textContent='保存しました';setTimeout(()=>$('saveBtn').textContent='設定を保存',1400)};
+buildPalette();buildMarks();load();applyPrefs();updateClock();timerDisplay();setInterval(updateClock,200);
 })();
 </script>
 </body>
